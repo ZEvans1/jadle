@@ -26,7 +26,7 @@ public class Sql2oReviewDao implements ReviewDao {
                     .bind(review)
                     .executeUpdate()
                     .getKey();
-            review.setId();
+            review.setId(id);
         } catch (Sql2oException ex) {
             System.out.println(ex);
         }
@@ -50,5 +50,14 @@ public class Sql2oReviewDao implements ReviewDao {
             return con.createQuery("SELECT * FROM reviews WHERE restaurantId = :restaurantId")
                     .addParameter("restaurantId", restaurantId)
                     .executeAndFetch(Review.class);
+        }
+    }
+
+    @Override
+    public List<Review> getAll(){
+        try (Connection con =sql2o.open()){
+            return con.createQuery("SELECT * FROM reviews")
+                    .executeAndFetch(Review.class);
+        }
     }
 }
