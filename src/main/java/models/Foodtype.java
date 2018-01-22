@@ -1,10 +1,10 @@
 package models;
 
-public class FoodType {
+public class Foodtype {
     private String name;
     private int id;
 
-    public FoodType(String name) {
+    public Foodtype(String name) {
         this.name = name;
     }
 
@@ -21,10 +21,10 @@ public class FoodType {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        FoodType foodType = (FoodType) o;
+        Foodtype foodtype = (Foodtype) o;
 
-        if (id != foodType.id) return false;
-        return name.equals(foodType.name);
+        if (id != foodtype.id) return false;
+        return name.equals(foodtype.name);
     }
 
     @Override
