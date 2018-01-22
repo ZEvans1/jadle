@@ -1,10 +1,12 @@
 package dao;
 
+import models.Foodtype;
 import models.Restaurant;
 import org.sql2o.Connection;
 import org.sql2o.Sql2o;
 import org.sql2o.Sql2oException;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Sql2oRestaurantDao implements RestaurantDao {
@@ -67,6 +69,7 @@ public class Sql2oRestaurantDao implements RestaurantDao {
 
     }
 
+    @Override
     public void deleteById(int id){
         String sql = "DELETE from restaurants WHERE id = :id";
         try (Connection con = sql2o.open()){
@@ -76,6 +79,17 @@ public class Sql2oRestaurantDao implements RestaurantDao {
         }catch (Sql2oException ex) {
             System.out.println(ex);
         }
+    }
+
+    @Override
+    public void addRestaurantToFoodtype(Restaurant restaurant, Foodtype foodtype) {
+
+    }
+
+    @Override
+    public List<Foodtype> getAllFOodtypesForARestaurant(int restaurantId) {
+        List<Foodtype> foodtypes = new ArrayList<>();
+        return foodtypes;
     }
 
 }
