@@ -87,7 +87,7 @@ public class Sql2oRestaurantDao implements RestaurantDao {
     }
 
     @Override
-    public List<Foodtype> getAllFOodtypesForARestaurant(int restaurantId) {
+    public List<Foodtype> getAllFoodtypesForARestaurant(int restaurantId) {
         List<Foodtype> foodtypes = new ArrayList<>();
         return foodtypes;
     }
