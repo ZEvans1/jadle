@@ -68,7 +68,7 @@ public class Sql2oRestaurantDao implements RestaurantDao {
     }
 
     public void deleteById(int id){
-        String sql = "DELETE * FROM restaurants WHERE id = :id";
+        String sql = "DELETE from restaurants WHERE id = :id";
         try (Connection con = sql2o.open()){
             con.createQuery(sql)
                     .addParameter("id", id)
