@@ -2,13 +2,16 @@ import com.google.gson.Gson;
 import dao.Sql2oFoodtypeDao;
 import dao.Sql2oRestaurantDao;
 import dao.Sql2oReviewDao;
+import exceptions.ApiException;
 import models.Foodtype;
 import models.Restaurant;
 import models.Review;
 import org.sql2o.Connection;
 import org.sql2o.Sql2o;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static spark.Spark.*;
 
@@ -82,7 +85,20 @@ public class App {
         get("/restaurants/:id", "application/json", (req, res) -> {
             int restaurantId = Integer.parseInt(req.params("id"));
             Restaurant restaurantToFind = restaurantDao.findById(restaurantId);
+            if (restaurantToFind == null) {
+                throw new ApiException(404, String.format("No restaurant with the id: \"%s\" exists", req.params("id")));
+            }
             return gson.toJson(restaurantToFind);
+        });
+
+        exception(ApiException.class, (exc, req, res) -> {
+            ApiException err = (ApiException) exc;
+            Map<String, Object> jsonMap = new HashMap<>();
+            jsonMap.put("status", err.getStatusCode());
+            jsonMap.put("errorMessage", err.getMessage());
+            res.type("application/json");
+            res.status(err.getStatusCode());
+            res.body(gson.toJson(jsonMap));
         });
 
         //Filters
