@@ -19,7 +19,7 @@ public class Sql2oReviewDao implements ReviewDao {
     @Override
     public void add(Review review) {
 
-        String sql = "INSERT INTO reviews (writtenBy, content, rating, restaurantId) VALUES (:writtenBy, :content, :rating, :restaurantId)";
+        String sql = "INSERT INTO reviews (writtenBy, content, rating, restaurantId, createdat) VALUES (:writtenBy, :content, :rating, :restaurantId, :createdat)";
 
         try (Connection con = sql2o.open()) {
             int id = (int) con.createQuery(sql)
@@ -60,4 +60,19 @@ public class Sql2oReviewDao implements ReviewDao {
                     .executeAndFetch(Review.class);
         }
     }
+
+    @Override
+    public List<Review> getAllReviewsByRestaurantSortedNewestToOldest(int restaurantId) {
+        List<Review> unsortedReviews = getAllReviewsByRestaurant(restaurantId);
+        //loop through all unsorted reviews
+        for (int i = 0; i <= unsortedReviews.size(); i++ ) {
+
+        }
+        //use the compareTo method defined in the Review class to see if older or newer
+        //switch review order if necessary, older reviews move behind newer reviews
+        List<Review> sortedReviews = unsortedReviews;
+        return sortedReviews;
+    }
+
+
 }

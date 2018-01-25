@@ -61,7 +61,40 @@ public class Sql2oReviewDaoTest {
         assertEquals(0, reviewDao.getAllReviewsByRestaurant(newRestaurant.getId()).size()); //why is this a good idea as a safety check?
     }
 
+    @Test
+    public void timeStampIsReturnedCorrectly() throws Exception {
+        Restaurant testRestaurant = setupRestaurant();
+        restaurantDao.add(testRestaurant);
+        Review testReview = new Review("Cap", "food", 3, testRestaurant.getId());
+        reviewDao.add(testReview);
+
+        long creationTime = testReview.getCreatedat();
+        long savedTime = reviewDao.getAll().get(0).getCreatedat();
+
+        String formattedCreationTime = testReview.getFormattedCreatedAt();
+        String formattedSavedTime = reviewDao.getAll().get(0).getFormattedCreatedAt();
+        assertEquals(formattedCreationTime, formattedSavedTime);
+        assertEquals(creationTime, reviewDao.getAll().get(0).getCreatedat());
+    }
+
+    @Test
+    public void reviewsAreReturnedInCOrrectOrder() throws Exception {
+        Restaurant testRestaurant = setupRestaurant();
+        restaurantDao.add(testRestaurant);
+        Review testReview = new Review("Kirk", "ok", 5, testRestaurant.getId());
+        reviewDao.add(testReview);
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException ex) {
+            ex.printStackTrace();
+        }
+        Review testSecondReview = new Review("Spock", "passable", 9, testRestaurant.getId());
+        reviewDao.add(testSecondReview);
+        assertEquals("passable", reviewDao.getAllReviewsByRestaurantSortedNewestToOldest(testRestaurant.getId()).get(0).getContent());
+    }
+
     public Restaurant setupRestaurant() {
         return new Restaurant("Fish Witch", "214 NE Broadway", "97232", "503-402-9874", "http://fishwitch.com", "hellofishy@fishwitch.com");
     }
+
 }
