@@ -91,6 +91,45 @@ public class App {
             return gson.toJson(restaurantToFind);
         });
 
+        get("/restaurants/:id/foodtypes", "application/json", (req, res)-> {
+            int restaurantId = Integer.parseInt(req.params("id"));
+            Restaurant restaurantToFind = restaurantDao.findById(restaurantId);
+            if (restaurantToFind == null) {
+                throw new ApiException(404, String.format("No restaurant with the id: \"%s\" exists", req.params("id")));
+            }else if (restaurantDao.getAllFoodtypesForARestaurant(restaurantId).size()==0) {
+                return "{\"message\":\"I'm sorry, but no foodtypes are listed for this restaurant.\"}";
+            }else {
+                return gson.toJson(restaurantDao.getAllFoodtypesForARestaurant(restaurantId));
+            }
+        });
+
+        get("/foodtypes/:id/restaurants", "application/json", (req, res)-> {
+            int foodtypeId = Integer.parseInt(req.params("id"));
+            Foodtype foodtypeToFind = foodtypeDao.findById(foodtypeId);
+            if (foodtypeToFind == null) {
+                throw new ApiException(404, String.format("No foodtype with the id: \"%s\" exists", req.params("id")));
+            }else if (foodtypeDao.getAllRestaurantsForAFoodtype(foodtypeId).size()==0) {
+                return "{\"message\":\"i'm sorry, but no restaurants are listed for this foodtype.\"}";
+            }else {
+                return gson.toJson(foodtypeDao.getAllRestaurantsForAFoodtype(foodtypeId));
+            }
+        });
+
+        post("/restaurants/:restaurantId/foodtype/:foodtypeId", "application/json", (req, res) -> {
+            int restaurantId = Integer.parseInt(req.params("restaurantId"));
+            int foodtypeId = Integer.parseInt(req.params("foodtypeId"));
+            Restaurant restaurant = restaurantDao.findById(restaurantId);
+            Foodtype foodtype = foodtypeDao.findById(foodtypeId);
+
+            if (restaurant != null && foodtype != null) {
+                foodtypeDao.addFoodtypeToRestaurant(foodtype, restaurant);
+                res.status(201);
+                return gson.toJson(String.format("Foodtype '%s' and Restaurants '%s' have been associated", foodtype.getName(), restaurant.getName()));
+            } else {
+                throw new ApiException(404, String.format("Restaurant or Foodtype does not exist"));
+            }
+        });
+
         exception(ApiException.class, (exc, req, res) -> {
             ApiException err = (ApiException) exc;
             Map<String, Object> jsonMap = new HashMap<>();

@@ -40,8 +40,8 @@ public class Sql2oFoodtypeDaoTest {
         return new Restaurant("Fish Witch", "214 NE Broadway", "97232", "503-402-9874", "http://fishwitch.com", "hellofishy@fishwitch.com");
     }
 
-    public Restaurant setupAltRestaurant() {
-        return new Restaurant("Burger Town", "214 NW Broadway", "97202", "503-402-5000", "http://burgertownusa.com", "helloburger@burgertownusa.com");
+    public Foodtype setupAnotherFoodtype() {
+        return new Foodtype("BBQ");
     }
 
     @Test
@@ -85,20 +85,19 @@ public class Sql2oFoodtypeDaoTest {
     }
 
     @Test
-    public void deleteingRestaurantAlsoUpdatesJoinTable() throws Exception {
-        Foodtype testFoodtype = new Foodtype("Seafood");
-        foodtypeDao.add(testFoodtype);
-
+    public void deleteingFoodtypeAlsoUpdatesJoinTable() throws Exception {
         Restaurant testRestaurant = setupRestaurant();
         restaurantDao.add(testRestaurant);
 
-        Restaurant altRestaurant = setupAltRestaurant();
-        restaurantDao.add(altRestaurant);
+        Foodtype testFoodtype = setupFoodtype();
+        Foodtype testFoodtypeTwo = setupAnotherFoodtype();
+        foodtypeDao.add(testFoodtype);
+        foodtypeDao.add(testFoodtypeTwo);
 
-        restaurantDao.addRestaurantToFoodtype(testRestaurant, testFoodtype);
-        restaurantDao.addRestaurantToFoodtype(altRestaurant, testFoodtype);
+        foodtypeDao.addFoodtypeToRestaurant(testFoodtype, testRestaurant);
+        foodtypeDao.addFoodtypeToRestaurant(testFoodtypeTwo, testRestaurant);
 
-        restaurantDao.deleteById(testRestaurant.getId());
-        assertEquals(0, restaurantDao.getAllFoodtypesForARestaurant(testRestaurant.getId()).size());
+        foodtypeDao.deleteById(testFoodtype.getId());
+        assertEquals(0, foodtypeDao.getAllRestaurantsForAFoodtype(testFoodtype.getId()).size());
     }
 }
