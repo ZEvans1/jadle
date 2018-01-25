@@ -78,7 +78,7 @@ public class Sql2oReviewDaoTest {
     }
 
     @Test
-    public void reviewsAreReturnedInCOrrectOrder() throws Exception {
+    public void reviewsAreReturnedInCorrectOrder() throws Exception {
         Restaurant testRestaurant = setupRestaurant();
         restaurantDao.add(testRestaurant);
         Review testReview = new Review("Kirk", "ok", 5, testRestaurant.getId());
@@ -90,7 +90,28 @@ public class Sql2oReviewDaoTest {
         }
         Review testSecondReview = new Review("Spock", "passable", 9, testRestaurant.getId());
         reviewDao.add(testSecondReview);
-        assertEquals("passable", reviewDao.getAllReviewsByRestaurantSortedNewestToOldest(testRestaurant.getId()).get(0).getContent());
+        try {
+            Thread.sleep(2000);
+        }
+        catch (InterruptedException ex){
+            ex.printStackTrace();
+        }
+
+        Review testThirdReview = new Review("Scotty", "bloody good grub!", 4, testRestaurant.getId());
+        reviewDao.add(testThirdReview);
+
+        try {
+            Thread.sleep(2000);
+        }
+        catch (InterruptedException ex){
+            ex.printStackTrace();
+        }
+
+        Review testFourthReview = new Review("Mr. Sulu", "I prefer home cooking", 2, testRestaurant.getId());
+        reviewDao.add(testFourthReview);
+
+        assertEquals(4, reviewDao.getAllReviewsByRestaurant(testRestaurant.getId()).size()); //it is important we verify that the list is the same size.
+        assertEquals("I prefer home cooking", reviewDao.getAllReviewsByRestaurantSortedNewestToOldest(testRestaurant.getId()).get(0).getContent());
     }
 
     public Restaurant setupRestaurant() {
